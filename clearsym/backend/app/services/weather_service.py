@@ -1,12 +1,19 @@
-from flask import requests, current_app
+import requests
+from flask import current_app
+
 
 def get_weather(lat,lon):
-    api_key = current_app.config("OPENWEATHER-API-KEY") #add api key
+    api_key = current_app.config("openweather_api_key") 
     url = (
         f"https://api.openweathermap.org/data/2.5/weather"
-        f"?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     )
-    response = requests.get(url)
+    params = {
+        "lat": lat,
+        "lon": lon,
+        "appid": api_key,
+        "units": "metric"
+    }
+    response = requests.get(url, params=params)
     return response.json()
 
 # when called a symptom is logged

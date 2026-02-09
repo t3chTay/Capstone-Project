@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ..models import Symptom
 from .. import db
+from ..services.weather_service import get_weather
 
 symptoms_bp = Blueprint("symptoms", __name__)
 @symptoms_bp.route("/", methods=["POST"])
@@ -11,6 +12,10 @@ def create_symptom():
         severity=data["severity"],
         notes=data["notes", ""]
     )
+    weather = get_weather(data["lat"], data["lon"])
+    
+    symptom.temperature = weather["main"]["temp"]
+    symptom.humidity = weather["main"]["humidity"]
     db.session.add(symptom)
     db.session.commit()
     return jsonify({"message": "Symptom logged"}), 201

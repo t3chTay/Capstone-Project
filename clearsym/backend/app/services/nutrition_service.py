@@ -1,9 +1,9 @@
 from flask import requests, current_app
 def analyze_food(food):
-    url = "https://api.edamam.com/api/nutrition-data"
+    url = ""
     params = {
-        "app_id": current_app.config["EDAMAM_APP_ID"], #add id
-        "app_key": current_app.config["EDAMAM_APP_KEY"],#add api key
+        "app_id": current_app.config["FATSECRET_APP_ID"], #add id
+        "app_key": current_app.config["FATSECRET_API_KEY"],#add api key
         "ingr": food
     }
     response= requests.et(url, params=params)

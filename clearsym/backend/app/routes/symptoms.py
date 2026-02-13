@@ -1,28 +1,32 @@
 from flask import Blueprint, request, jsonify
-from ..models import Symptom
-from .. import db
-from ..services.weather_service import get_weather
+from app import db
+from app.models.symptom import Symptom
+from app.services.weather_service import get_weather
 
 symptoms_bp = Blueprint("symptoms", __name__)
 @symptoms_bp.route("/", methods=["POST"])
 def create_symptom():
     data = request.json
-    symptom = Symptom(
+    lat = data.get("lat", 43.65107)
+    lon = data.get ("lon", -79.347015)
+    
+    weather = get_weather(lat,lon)
+    symptom = Symptom (
         name=data["name"],
         severity=data["severity"],
         notes=data["notes", ""]
+        symptom.temperature = weather["main"]["temp"]
+        symptom.humidity = weather["main"]["humidity"]
+        pressure=weather["main"]["pressure"],
+        weather_condition=weather["weather"][0]["main"],
+        wind_speed=weather["wind"]["speed"]
     )
-    weather = get_weather(data["lat"], data["lon"])
     
-    symptom.temperature = weather["main"]["temp"]
-    symptom.humidity = weather["main"]["humidity"]
     db.session.add(symptom)
     db.session.commit()
-    return jsonify({"message": "Symptom logged"}), 201
+    return jsonify(symptom.to_dict()), 201
 
 @symptoms_bp.route("/", methods=["GET"])
 def get_symptoms():
-    symptoms = Symptom.query.all()
-    return jsonify([
-        {"id": s.id, "name": s.name, "severity": s.severity, "notes": s.notes, "created_at": s.created_at} for s in symptoms
-    ])
+    symptoms = Symptom.query.order_by(Symptom.created_at.desc()).all()
+    return jsonify([s.to_dict() for s in symptoms])

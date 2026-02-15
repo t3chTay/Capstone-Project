@@ -3,7 +3,8 @@ from flask import current_app
 
 
 def get_weather(lat,lon):
-    api_key = current_app.config("openweather_api_key") 
+    api_key = current_app.config["OPENWEATHER_API_KEY"]
+    print(f"API Key being used: {api_key}")
     url = (
         f"https://api.openweathermap.org/data/2.5/weather"
     )

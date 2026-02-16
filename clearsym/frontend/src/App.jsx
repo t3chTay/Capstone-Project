@@ -40,9 +40,6 @@ function App() {
         return symptoms.filter((s) => new Date(s.created_at) >= cutoff)
     })();
 
-    useEffect(() => {
-        fetchSymptoms();
-    }, []);
 
     // summary stats cards
     const cardStyle = {
@@ -53,6 +50,45 @@ function App() {
     };
     const labelStyle = {fontSize: "13px", color:"#555"};
     const valueStyle = {fontSize: "28px", fontWeight: 700, marginTop: "6px"};
+    
+    // weather trigger insights
+    const triggerInsight = (() => {
+            const logs = filteredSymptoms ?? [];
+
+            if (logs.length < 3) return "Not enough data yet — log at least 3 symptoms to generate insights.";
+
+            const buckets = {};
+            for (const s of logs) {
+                const condition = s.weather_condition || "Unknown";
+                const sev = Number(s.severity);
+
+                if (!Number.isFinite(sev)) continue;
+
+                if (!buckets[condition]) buckets[condition] = { total: 0, count: 0 };
+                buckets[condition].total += sev;
+                buckets[condition].count += 1;
+            }
+
+            const ranked = Object.entries(buckets)
+                .map(([condition, v]) => ({
+                condition,
+                avg: v.count ? v.total / v.count : 0,
+                count: v.count,
+                }))
+                .filter((x) => x.count > 0)
+                .sort((a, b) => b.avg - a.avg);
+
+            if (ranked.length === 0) return "Not enough valid severity data to generate insights.";
+
+            const top = ranked[0];
+            return `Highest average severity occurs during ${top.condition} (avg ${top.avg.toFixed(
+                1
+            )} over ${top.count} logs).`;
+            })();
+
+        useEffect(() => {
+        fetchSymptoms();
+    }, []);
 
     return (
         <div style={{padding: "30px", fontFamily: "Arial, sans-serif"}}>
@@ -75,12 +111,18 @@ function App() {
             </div>
             <div style={{marginTop: 18, display:"flex", gap:10, alignItems: "center"}}>
                 <span style={{fontSize: 14, color: "#444"}}>Date Range:</span>
-                <select value={range} onChange={(e) = setRange(e.target.value)}>
+                <select value={range} onChange={(e) => setRange(e.target.value)}>
                     <option value="7">Last 7 days</option>
                     <option value="30">Last 30 days</option>
                     <option value="all">All time</option>
                 </select>
             </div>
+            <div style={{...cardStyle, marginTop:16, borderLeft: "5px solid #2563eb", width: "100%", height:250}}>
+                <div style={{fontSize:13, color: "#555"}}>Trigger Insights</div>
+                <div style={{fontSize: 16, fontWeight: 600, marginTop: 6}}>{triggerInsight}</div>
+            </div>
+
+            <hr />
             <SymptomForm onNewSymptom={fetchSymptoms} />
 
             <h2>Logged Symptoms</h2>

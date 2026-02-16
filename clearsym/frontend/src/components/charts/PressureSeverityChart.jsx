@@ -1,0 +1,26 @@
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+
+export default function PressureChart({data}) {
+    // format data for chart
+    const chartData = data.map(d => ({
+        pressure: d.pressure,
+        severity: d.severity,
+    }));
+    console.log("Chart Data:", chartData);
+    return (
+        <div style={{marginBottom: "40px"}}>
+            <h3>Pressure vs Severity Chart</h3>
+            <p style={{fontSize: "14px", color: "#555"}}> Visualizes correlation between pressure and symptom severity.</p>
+            <div style={{background:"#ccc", padding:"30px", borderRadius: "12px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)"}}>
+                <LineChart width={600} height={300} data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="pressure" label={{ value: "Pressure", position: "insideBottomRight", offset: -5 }} />
+                    <YAxis label={{ value: "Severity", angle: -90, position: "insideLeft" }} />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="severity" stroke="#8884d8" activeDot={{radius:8}} />
+                </LineChart>
+            </div>
+        </div>
+    );
+}

@@ -1,7 +1,11 @@
 import { useEffect , useState } from "react";
-import { getSymptoms } from "./api";
+import { getSymptoms } from "./api/symptoms";
 import SymptomForm from "./components/SymptomForm";
-import PressureChart from "./components/PressureChart";
+import PressureChart from "./components/charts/PressureSeverityChart";
+import SeverityTempChart from "./components/charts/SeverityTempChart";
+import DailyFrequencyChart from "./components/charts/DailyFrequencyChart";
+import ConditionPie from "./components/charts/ConditionPie";
+
 
 function App() {
     const [symptoms, setSymptoms] = useState([]);
@@ -12,17 +16,54 @@ function App() {
         .catch(err => console.error(err));
     };
 
+    const totalLogs = symptoms.length;
+    const averageSeverity = totalLogs === 0 ? 0 : (symptoms.reduce((sum,s) => sum + (Number(s.severity) || 0), 0) / totalLogs).toFixed(1);
+
+    const mostCommonCondition = (() => {
+        if (totalLogs === 0) return "Not enough data";
+        const counts = symptoms.reduce((acc, s) => {
+            const key = s.weather_condition || "unknown";
+            acc[key] = (acc[key] || 0) + 1;
+            return acc;
+        }, {});
+        return Object.entries(counts).sort((a,b) => b[1] - a[1])[0][0];
+    }) ();
+
     useEffect(() => {
         fetchSymptoms();
     }, []);
 
+    // summary stats cards
+    const cardStyle = {
+        background: "white",
+        borderRadius: "12px",
+        padding: "16px",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+    };
+    const labelStyle = {fontSize: "13px", color:"#555"};
+    const valueStyle = {fontSize: "28px", fontWeight: 700, marginTop: "6px"};
+
     return (
-        <div style={{padding: "20px"}}>
-            <h1>ClearSYM Dashboard</h1>
+        <div style={{padding: "30px", fontFamily: "Arial, sans-serif"}}>
+            <h1 style={{marginBottom:"20px"}}>ClearSYM Dashboard</h1>
+            <div style={{display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 16}}>
+                <div style={cardStyle}>
+                    <div style={labelStyle}>Total Logs</div>
+                    <div style={valueStyle}>{totalLogs}</div>
+
+                </div>
+                <div style={cardStyle}>
+                    <div style={labelStyle}>Average Severity</div>
+                    <div style={valueStyle}>{averageSeverity}</div>
+                </div>
+                <div style={cardStyle}>
+                    <div style={labelStyle}>Most Common Condition</div>
+                    <div style={valueStyle}>{mostCommonCondition}</div>
+                </div>
+
+            </div>
 
             <SymptomForm onNewSymptom={fetchSymptoms} />
-
-            <PressureChart data={symptoms} />
 
             <h2>Logged Symptoms</h2>
             {symptoms.map(s => (
@@ -35,6 +76,18 @@ function App() {
                     <p>Notes: {s.notes}</p>
                 </div>
             ))}
+
+            <hr />
+            <div style={{marginTop: "40px"}}>
+              <h2>Health Insights</h2>  
+              <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", marginTop: "20px"}}>
+
+                <PressureChart data={symptoms} />
+                <SeverityTempChart />
+                <DailyFrequencyChart />
+                <ConditionPie />   
+                </div>
+            </div>
         </div>
     );
 }

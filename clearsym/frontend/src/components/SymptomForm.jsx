@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createSymptom } from "../api";
+import { createSymptom } from "../api/symptoms";
 import { formToJSON } from "axios";
 
 export default function SymptomForm({onNewSymptom}) {

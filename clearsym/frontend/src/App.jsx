@@ -9,6 +9,7 @@ import ConditionPie from "./components/charts/ConditionPie";
 
 function App() {
     const [symptoms, setSymptoms] = useState([]);
+    const [range, setRange] = useState("7"); // for data range filtering
 
     const fetchSymptoms = () => {
         getSymptoms()
@@ -28,6 +29,16 @@ function App() {
         }, {});
         return Object.entries(counts).sort((a,b) => b[1] - a[1])[0][0];
     }) ();
+
+    const filteredSymptoms = (() => {
+        if (range === "all") return symptoms;
+
+        const days = Number(range);
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - days);
+
+        return symptoms.filter((s) => new Date(s.created_at) >= cutoff)
+    })();
 
     useEffect(() => {
         fetchSymptoms();
@@ -62,7 +73,14 @@ function App() {
                 </div>
 
             </div>
-
+            <div style={{marginTop: 18, display:"flex", gap:10, alignItems: "center"}}>
+                <span style={{fontSize: 14, color: "#444"}}>Date Range:</span>
+                <select value={range} onChange={(e) = setRange(e.target.value)}>
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="all">All time</option>
+                </select>
+            </div>
             <SymptomForm onNewSymptom={fetchSymptoms} />
 
             <h2>Logged Symptoms</h2>

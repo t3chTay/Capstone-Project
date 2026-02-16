@@ -13,9 +13,19 @@ def create_app():
     db.init_app(app)
     CORS(
         app,
-        resources={r"/api/*": {"origins": "*"}},
+        resources={r"/api/*": {
+            "origins": ["http://localhost:5173", "https://localhost:5174"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type"]
+            }},
         supports_credentials=True
         )
+    @app.after_request
+    def after_request(response):
+        response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+        return response
     
     from .routes.symptoms import symptoms_bp
     from .routes.weather import weather_bp

@@ -22,7 +22,7 @@ def create_symptom():
     humidity = weather.get("main", {}).get("humidity")
     pressure = weather.get("main", {}).get("pressure")
     condition = weather.get("weather", [{}])[0].get("main")
-    speed = weather.get("wind", {}).get("speed")
+    speed = weather.get("wind", {}).get("speed", 0)
     
     symptom = Symptom(
         symptom_type=symptom_type,
@@ -32,7 +32,7 @@ def create_symptom():
         humidity=humidity,
         pressure=pressure,
         weather_condition=condition,
-        wind_speed=weather.get("wind", {}).get("speed")
+        wind_speed=speed
     )
     
     db.session.add(symptom)

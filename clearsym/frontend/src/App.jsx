@@ -1,11 +1,11 @@
 import { useEffect , useState } from "react";
-import { getSymptoms } from "./api/symptoms";
+import { getSymptoms, createSymptom, deleteSymptom } from "./api/symptoms";
 import SymptomForm from "./components/SymptomForm";
 import PressureChart from "./components/charts/PressureSeverityChart";
 import SeverityTempChart from "./components/charts/SeverityTempChart";
 import DailyFrequencyChart from "./components/charts/DailyFrequencyChart";
 import ConditionPie from "./components/charts/ConditionPie";
-
+// console.log("deleteSymptom import:", deleteSymptom);
 
 function App() {
     const [symptoms, setSymptoms] = useState([]);
@@ -81,9 +81,9 @@ function App() {
             if (ranked.length === 0) return "Not enough valid severity data to generate insights.";
 
             const top = ranked[0];
-            return `Highest average severity occurs during ${top.condition} (avg ${top.avg.toFixed(
+            return `Your highest average severity occurs during ${top.condition} conditions (avg ${top.avg.toFixed(
                 1
-            )} over ${top.count} logs).`;
+            )} over ${top.count} logs). Consider taking preventative measures during these conditions to avoid symptom flare-ups.`;
             })();
 
         useEffect(() => {
@@ -117,7 +117,7 @@ function App() {
                     <option value="all">All time</option>
                 </select>
             </div>
-            <div style={{...cardStyle, marginTop:16, borderLeft: "5px solid #2563eb", width: "100%", height:250}}>
+            <div style={{...cardStyle, marginTop:16, borderLeft: "5px solid #2563eb", width: "100%"}}>
                 <div style={{fontSize:13, color: "#555"}}>Trigger Insights</div>
                 <div style={{fontSize: 16, fontWeight: 600, marginTop: 6}}>{triggerInsight}</div>
             </div>
@@ -134,6 +134,13 @@ function App() {
                     <p>Pressure: {s.pressure} hPa</p>
                     <p>Humidity: {s.humidity}%</p>
                     <p>Notes: {s.notes}</p>
+                   <button onClick={async () => {
+                        await deleteSymptom(s.id);
+                        fetchSymptoms();
+                    }}
+                    style={{marginTop: 8}}>
+                        Delete
+                </button>  
                 </div>
             ))}
 

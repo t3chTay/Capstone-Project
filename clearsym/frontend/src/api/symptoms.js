@@ -6,3 +6,4 @@ const API = axios.create({
 
 export const getSymptoms = () => API.get("/symptoms/");
 export const createSymptom = (data) => API.post("/symptoms/", data);
+export const deleteSymptom = (symptomId) => API.delete(`/symptoms/${symptomId}`);

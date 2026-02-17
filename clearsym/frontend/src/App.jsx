@@ -1,6 +1,7 @@
 import { useEffect , useState } from "react";
-import { getSymptoms, createSymptom, deleteSymptom } from "./api/symptoms";
+import { getSymptoms, updateSymptom, deleteSymptom } from "./api/symptoms";
 import SymptomForm from "./components/SymptomForm";
+import EditSymptom from "./components/EditSymptom";
 import PressureChart from "./components/charts/PressureSeverityChart";
 import SeverityTempChart from "./components/charts/SeverityTempChart";
 import DailyFrequencyChart from "./components/charts/DailyFrequencyChart";
@@ -10,6 +11,8 @@ import ConditionPie from "./components/charts/ConditionPie";
 function App() {
     const [symptoms, setSymptoms] = useState([]);
     const [range, setRange] = useState("7"); // for data range filtering
+    const [editing, setEditing] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchSymptoms = () => {
         getSymptoms()
@@ -90,6 +93,22 @@ function App() {
         fetchSymptoms();
     }, []);
 
+    const openEdit = (symptom) => {
+        setEditing(symptom);
+        setIsModalOpen(true);
+    };
+
+    const closeEdit = () => {
+        setIsModalOpen(false);
+        setEditing(null);
+    };
+
+    const saveEdit = async (payload) => {
+        await updateSymptom(editing.id, payload);
+        closeEdit();
+        fetchSymptoms();
+    };
+
     return (
         <div style={{padding: "30px", fontFamily: "Arial, sans-serif"}}>
             <h1 style={{marginBottom:"20px"}}>ClearSYM Dashboard</h1>
@@ -134,6 +153,7 @@ function App() {
                     <p>Pressure: {s.pressure} hPa</p>
                     <p>Humidity: {s.humidity}%</p>
                     <p>Notes: {s.notes}</p>
+                    <button onClick={() => openEdit(s)} style={{marginRight:10}}>Edit</button>
                    <button onClick={async () => {
                         await deleteSymptom(s.id);
                         fetchSymptoms();
@@ -155,6 +175,12 @@ function App() {
                 <ConditionPie />   
                 </div>
             </div>
+            <EditSymptom
+                open={isModalOpen}
+                symptom={editing}
+                onClose={closeEdit}
+                onSave={saveEdit}
+            />
         </div>
     );
 }

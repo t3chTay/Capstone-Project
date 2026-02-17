@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { createSymptom } from "../api/symptoms";
 import { formToJSON } from "axios";
 
@@ -6,6 +6,7 @@ export default function SymptomForm({onNewSymptom}) {
     const [symptomType, setSymptomType] = useState("");
     const [severity, setSeverity] = useState("");
     const [notes, setNotes] = useState("");
+    const [coords, setCoords] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,6 +17,7 @@ export default function SymptomForm({onNewSymptom}) {
             symptom_type: symptomType,
             severity: parseInt(severity),
             notes,
+            ...(coords ? coords : {}),
         };
 
         try {
@@ -30,6 +32,22 @@ export default function SymptomForm({onNewSymptom}) {
             alert("Failed to log symptom");
         }
     };
+
+    useEffect(() => {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setCoords({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
+                });
+            },  
+            (err) => {
+                console.warn("Geolocation failed:", err.message);
+                setCoords(null);
+            }
+        );
+    }, []);
 
     return (
         <form onSubmit={handleSubmit} style={{marginBottom: "20px"}}>
@@ -65,6 +83,9 @@ export default function SymptomForm({onNewSymptom}) {
             </div>
             
             <button type="submit">Log Symptom</button>
+            <p style={{fontSize: 12, color: "#666", marginTop:8}}>
+                {coords ? "Using your location for weather data" : "Location not available, weather data may be less accurate"}
+            </p>
         </form>
     );
 }

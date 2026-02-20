@@ -1,19 +1,24 @@
 import { useState, useEffect} from "react";
 import { createSymptom } from "../api/symptoms";
-import { formToJSON } from "axios";
 
-export default function SymptomForm({onNewSymptom}) {
+export default function SymptomForm({onNewSymptom, patientCode}) {
     const [symptomType, setSymptomType] = useState("");
     const [severity, setSeverity] = useState("");
     const [notes, setNotes] = useState("");
     const [coords, setCoords] = useState(null);
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!symptomType || !severity) return alert("Type and severity required");
+        if (!symptomType || !severity === "") return alert("Type and severity required");
 
+        if (!patientCode) {
+          console.error("Patient code is still loading, try again in a moment");  
+          return;
+        }
         const data = {
+            patient_code: patientCode,
             symptom_type: symptomType,
             severity: parseInt(severity),
             notes,
@@ -22,14 +27,21 @@ export default function SymptomForm({onNewSymptom}) {
 
         try {
             const res = await createSymptom(data);
-            onNewSymptom(res.data.symptom_id);
+            if (typeof onNewSymptom === "function") {
+                onNewSymptom(res.data.symptom_id);
+            }
             setSymptomType("");
             setSeverity("");
             setNotes("");
         } catch (err) {
                 console.error("FULL ERROR:", err);
+                console.error("ERROR MESSAGE:", err?.message);
+                console.error("ERR CODE:", err?.code);
+                console.error("ERR REQUEST:", err?.request);
                 console.error("SERVER RESPONSE:", err?.response?.data);
-            alert("Failed to log symptom");
+                console.error("STATUS:", err?.response?.status);
+                console.error("REQUEST DATA SENT:", data);
+                setError("err?.message || Failed to log symptom");
         }
     };
 
@@ -50,42 +62,63 @@ export default function SymptomForm({onNewSymptom}) {
     }, []);
 
     return (
-        <form onSubmit={handleSubmit} style={{marginBottom: "20px"}}>
-            <h2>Log New Symptom</h2>
+        <div className="card-section">
+            <form onSubmit={handleSubmit} style={{marginBottom: "20px"}}>
+                <div>
+                    <label style={{marginTop:8, fontWeight: 900, fontSize:16}}>Symptom Type: </label>
+                    <input style={inputStyle}
+                        type="text"
+                        value={symptomType}
+                        onChange={(e) => setSymptomType(e.target.value)}
+                    />
+                </div>
 
-            <div>
-                <label>Symptom Type: </label>
-                <input
-                    type="text"
-                    value={symptomType}
-                    onChange={(e) => setSymptomType(e.target.value)}
-                />
-            </div>
+                <div>
+                    <label style={{marginTop:8, fontWeight: 900, fontSize:16}}>Severity (1-10): </label>
+                    <input style={inputStyle} 
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={severity}
+                        onChange={(e) => setSeverity(e.target.value)}
+                    />
+                </div>
 
-            <div>
-                <label>Severity (1-10): </label>
-                <input 
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={severity}
-                    onChange={(e) => setSeverity(e.target.value)}
-                />
-            </div>
-
-            <div>
-                <label>Notes: </label>
-                <input
-                    type="text"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                />
-            </div>
-            
-            <button type="submit">Log Symptom</button>
-            <p style={{fontSize: 12, color: "#666", marginTop:8}}>
-                {coords ? "Using your location for weather data" : "Location not available, weather data may be less accurate"}
-            </p>
-        </form>
+                <div>
+                    <label style={{marginTop:8, fontWeight: 900, fontSize:16}}>Notes: </label>
+                    <input style={inputStyle}
+                        type="text"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                    />
+                </div>
+                
+                <button style={primaryButton}type="submit" disabled={!patientCode}>Log Symptom</button>
+                <p style={{fontSize: 12, color: "#666", marginTop:8}}>
+                    {coords ? "Using your location for weather data" : "Location not available, weather data may be less accurate"}
+                </p>
+                {error && <p style={{color: "red", marginTop: 8}}>{error}</p>}
+            </form>
+        </div>
     );
 }
+const primaryButton = {
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    padding: "8px 14px",
+    borderRadius: 10,
+    fontWeight: 600,
+    cursor: "pointer",
+    marginTop: 30,
+};
+const inputStyle = {
+  width: "90%",
+  marginTop: 6,
+  padding: "10px 12px",
+  borderRadius: 12,
+  border: "1px solid #e5e7eb",
+  outline: "none",
+  fontSize: 14
+};
+

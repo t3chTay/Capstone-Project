@@ -1,32 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getDailyFrequency } from "../../api/analytics";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-export default function DailyFrequencyChart() {
-    const [data, setData] = useState([]);
+export default function DailyFrequencyChart({ patientCode }) {
+  const [raw, setRaw] = useState([]);
 
-    useEffect(() => {
-        getDailyFrequency().then(res => setData(res.data))
-        .catch(err => console.error(err));
-    }, []);
-    console.log("Daily Frequency:", data);
+  useEffect(() => {
+    if (!patientCode) return;
 
-    return (
-        <div style={{width: "100%", height: 300}}>
-            <h3>Daily Symptom Frequency</h3>
-            <p style={{fontSize: "14px", color: "#555"}}> Visualizes daily symptom frequency over time.</p>
-            <div style={{background:"#ccc", padding:"30px", borderRadius: "12px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)"}}>
-                <ResponsiveContainer width="100%" height={300}>
-                    
-                    <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis allowDecimals={false}/>
-                        <Tooltip />
-                        <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={3}/>
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+    getDailyFrequency(patientCode)
+      .then((res) => setRaw(Array.isArray(res.data) ? res.data : []))
+      .catch((err) => {
+        console.error("DailyFrequencyChart fetch error:", err);
+        setRaw([]);
+      });
+  }, [patientCode]);
+
+  // Normalize to { date, count } even if backend returns different keys
+  const data = useMemo(() => {
+    return (raw || [])
+      .map((d) => ({
+        date: d.date ?? d.day ?? d.created_at ?? d.label,
+        count: Number(d.count ?? d.frequency ?? d.total ?? d.value ?? 0),
+      }))
+      .filter((d) => d.date);
+  }, [raw]);
+console.log("Daily Frequency sample:", raw[0]);
+  return (
+    <div style={{ width: "100%", height: 320 }}>
+      {patientCode && data.length === 0 ? (
+        <div style={{ color: "#6b7280", fontSize: 13 }}>
+          No daily frequency data yet. Log symptoms across multiple days to populate this chart.
         </div>
-    );
+      ) : null}
+
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis allowDecimals={false} />
+          <Tooltip />
+          <Line type="monotone" dataKey="count" strokeWidth={3} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }

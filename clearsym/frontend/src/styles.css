@@ -1,0 +1,181 @@
+:root {
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --muted: #6b7280;
+}
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 900px at 20% 0%, rgba(58, 110, 222, 0.294), transparent 55%),
+    linear-gradient(#f8f9fa, #f3f4f6);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);   
+  background-attachment: fixed;
+}
+
+h1, h2, h3 {
+  margin: 0;
+}
+
+button {
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.10); 
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnSec:hover {
+  background: #f9fafb;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+}
+
+.btnDanger {
+  background: #111827;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight:600;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.btnDanger:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(220,38,38,0.25);
+}
+
+.btnDanger:active {
+  transform: translateY(0);
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+}
+
+.section {
+  margin-top: 30px;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+
+#tsparticles,
+#tsparticles canvas {
+  pointer-events: none !important;
+}
+
+#tsparticles {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+}
+
+.app-ui {
+  position: relative;
+  z-index: 0;
+}
+  
+.modalOverlay {
+  animation: overlayFadeIn 160ms ease-out;
+  z-index: 9999;
+}
+
+.modalCard {
+  animation: modalPopIn 190ms ease-out;
+  z-index: 9999;
+}
+
+@keyframes overlayFadeIn {
+  from {opacity: 0;}
+  to {opacity :1;}
+}
+@keyframes modalPopIn {
+  from {opacity: 0; transform: translateY(8px) scale(0.98); }
+  to {opacity:1; transform: translateY(0) scale(1); }
+}
+
+.symptomCard {
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+.symptomCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+.symptomCard.deleting {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.btnSec {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.btnSec:hover {
+  background: #f9fafb;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+}
+
+.btnSec:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.btnDanger {
+  background: #111827;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+.btnDanger:hover { background: #dc2626; transform: translateY(-1px); box-shadow: 0 10px 22px rgba(220,38,38,0.25); }
+
+.foodCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}

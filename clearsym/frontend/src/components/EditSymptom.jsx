@@ -14,12 +14,12 @@ export default function EditSymptom({open, symptom, onClose, onSave}) {
     if (!open || !symptom) return null;
 
     return (
-        <div style={overlayStyle} onClick={onClose}>
-            <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-                <h3 style={{marginTop: 0}}>Edit Symptom</h3>
+        <div className="modalOverlay" style={overlayStyle} onClick={onClose}>
+            <div className="modalCard" style={modalStyle} onClick={(e) => e.stopPropagation()}>
+                <h3 style={{...pill, marginTop: 0}}><span style={{width:8, height:8, borderRadius: 100, background: "#2563eb"}}/>Edit Symptom</h3>
 
                 <div style={{display: "grid", gap: 10}}>
-                    <label>
+                    <label style={{...labelStyle, marginTop:12}}>
                         Severity (1-10):
                         <input 
                             type="number"
@@ -30,7 +30,7 @@ export default function EditSymptom({open, symptom, onClose, onSave}) {
                             style={inputStyle}
                         />
                     </label>
-                    <label>
+                    <label style={labelStyle}>
                         Notes:
                         <input 
                             type="text"
@@ -40,9 +40,9 @@ export default function EditSymptom({open, symptom, onClose, onSave}) {
                         />
                     </label>
                 </div>
-                <div style={{display: "flex", gap: 10, justifyContent: "flex-end"}}>
-                    <button onClick={onClose}>Cancel</button>
-                    <button onClick={() => onSave({severity: Number(severity), notes})}>Save</button>
+                <div style={{display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14}}>
+                    <button style={ghostButton} onClick={onClose}>Cancel</button>
+                    <button style={primaryButton} onClick={() => onSave({severity: Number(severity), notes})}>Save</button>
                 </div>
             </div>
         </div>
@@ -52,12 +52,13 @@ export default function EditSymptom({open, symptom, onClose, onSave}) {
 const overlayStyle = {
     position: "fixed",
     inset: 0,
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "#11182773",
+    backdropFilter: "blur(6px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    zIndex:50,
+    zIndex: 9999,
 };
 
 const modalStyle = {
@@ -66,13 +67,52 @@ const modalStyle = {
     backgroundColor: "white",
     borderRadius: 12,
     padding: 16,
-    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+    boxShadow: "0 2px 10px #00000033",
+    animation: "fadeIn 0.2s ease-out"
 }
 
 const inputStyle = {
-    width: "100%",
+    width: "95%",
     padding: 8,
     marginTop: 6,
     borderRadius: 4,
-    border: "1px solid #ccc",
+    border: "1px solid #cccccc",
 }
+
+const labelStyle = {
+    fontWeight: 700,
+    fontSize: 20
+}
+
+const pill = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: "1px solid #2563eb38",
+    background: "#2563eb1a",
+    color: "#1d4ed8",
+    fontSize: 17,
+    fontWeight: 800,
+    marginBottom: 8
+}
+const primaryButton = {
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  padding: "8px 14px",
+  borderRadius: 10,
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+const ghostButton = {
+  background: "#555555b4",
+  border: "1px solid #e5e7eb",
+  padding: "8px 14px",
+  borderRadius: 10,
+  fontWeight: 600,
+  cursor: "pointer",
+  color: "#fff"
+};

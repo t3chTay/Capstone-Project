@@ -253,7 +253,8 @@ function AppDashboard({mode = "patient"}) {
     };
     useEffect(() => {
         console.log("isDeleteOpen:", isDeleteOpen, "deleteTarget:", deleteTarget);
-    }, [isDeleteOpen, deleteTarget]);
+    }, [isDeleteOpen, deleteTarget]
+);
 
     const userName = localStorage.getItem("clearsym_user_name") || "";
 
@@ -266,7 +267,7 @@ function AppDashboard({mode = "patient"}) {
                 {/* HEADER */}
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                     <div>
-                        <div style={ui.pill}> <span style={{width:8, height:8, borderRadius: 100, background: "#2563eb"}}/>Dashboard</div>
+                        <div style={ui.pill}><span style={{width:8, height:8, borderRadius: 100, background: "#2563eb"}}/>Dashboard</div>
                         {userName && (
                             <div style={{fontSize: 55, fontWeight: 700, color: "#6b7280", marginBottom: 6}}>
                                 Hello, <span style={{color: "#111827"}}>{userName}</span>
@@ -329,7 +330,8 @@ function AppDashboard({mode = "patient"}) {
                 {/* OVERVIEW TAB */}
                 {activeTab === "overview" && (
                     <>
-                    {/* Patient session card */}
+                    < hr/>
+                    {/* patient session card */}
                     <div style={{ ...ui.card, padding: 20 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                             <div>
@@ -450,6 +452,7 @@ function AppDashboard({mode = "patient"}) {
                 {/* LOG & TRACKING SECTION */}
                 {activeTab === "log" && mode !== "doctor" && (
                     <>
+                    < hr/>
                         <div style={{ marginTop: 4, color: "#6b7280", lineHeight: 1.6 }}>
                         Log symptoms and meals to build stronger insights over time.
                             </div>
@@ -679,10 +682,11 @@ function AppDashboard({mode = "patient"}) {
                 )}
                 
                 
-                <hr />
+               
                 {/* ANALYTICS SECTION */}
                 {activeTab === "analytics" && (
-                    <>
+                    <> 
+                    < hr/>
                         <div style={{ marginTop: 4, color: "#6b7280", lineHeight: 1.6 }}>
                         Visualize patterns across weather, severity, frequency, and food triggers.
                         </div>
@@ -692,7 +696,7 @@ function AppDashboard({mode = "patient"}) {
                         <div style={ui.card}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                             <div>
-                                <div style={ui.pill}>🧠 Insights</div>
+                                <div style={ui.pill}>📊 Insights</div>
                                 <div style={{ marginTop: 8, fontWeight: 900, fontSize: 16 }}>Food ↔ Severity Correlation</div>
                                 <div style={{ marginTop: 4, color: "#6b7280", fontSize: 13 }}>
                                 Helps identify foods commonly associated with higher symptom severity.
@@ -851,4 +855,7 @@ function AppDashboard({mode = "patient"}) {
 
 }
 
+
+
 export default AppDashboard;
+

@@ -100,13 +100,13 @@ export default function Navbar() {
                 window.location.href = "/";
               }}
               style={{
-                background: "#5555556b",
-                border: "1px solid #bfbbd8",
+                background: "#07070715",
+                border: "1px solid #ffffff",
                 padding: "8px 14px",
                 borderRadius: 10,
                 cursor: "pointer",
                 fontWeight: 600,
-                color: "black"
+                color: "#323268"
               }}
             >
               Logout

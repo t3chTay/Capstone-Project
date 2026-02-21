@@ -179,3 +179,10 @@ button:disabled {
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(0,0,0,0.08);
 }
+
+hr {
+  background-color: grey;
+  height: 2px;
+  border: none;
+  z-index: 999;
+}

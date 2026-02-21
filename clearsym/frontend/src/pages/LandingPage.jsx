@@ -14,7 +14,7 @@ export default function LandingPage() {
     >
 
     {/* hero section */}
-    <div style={{maxWidth: 1100, margin: "0 auto", padding: "36px 20px 10px"}}>
+    <div style={{maxWidth: 1100, margin: "0 auto", marginTop: 67, padding: "36px 20px 10px"}}>
       <div
         style={{
           display: "grid",
@@ -51,12 +51,12 @@ export default function LandingPage() {
           >
             See patterns in your symptoms-<span style={{color:"2563eb"}}>faster</span>.
           </h1>  
-          <p style={{marginTop:14, fontSize:17, color:"#4b5563", lineHeight: 1.6, maxWidth: 620}}>
+          <p style={{marginTop:45, fontSize:17, color:"#4b5563", lineHeight: 1.6, maxWidth: 620}}>
             ClearSYM helps you log symptoms, capture local weather context, track food triggers, visualize correlations- 
             so you can make smarter decisions and share clear insights with your clinician.
           </p>
 
-          <div style={{display: "flex", gap:12, marginTop: 20, flexWrap: "wrap"}}>
+          <div style={{display: "flex", gap:12, marginTop: 44, flexWrap: "wrap"}}>
             {authed ? (
               <Link to="/dashboard">
                 <button
@@ -207,8 +207,12 @@ export default function LandingPage() {
           </div>
         </div>
 
+
+        <div>
+          <hr style={{marginTop: 88}}/>
+        </div>
         {/* feature grid */}
-        <div style={{ marginTop: 36 }}>
+        <div style={{ marginTop: 200 }}>
           <div style={{ fontWeight: 900, fontSize: 18 }}>What you can do on our app</div>
           <p style={{ marginTop: 6, color: "#6b7280", maxWidth: 720, lineHeight: 1.6 }}>
             Log → enhance accuracy with weather → analyze charts → share with clinicians.
@@ -246,7 +250,7 @@ export default function LandingPage() {
         </div>
 
         {/* how it works */}
-        <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ marginTop: 90, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div
             style={{
               background: "white",

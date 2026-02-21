@@ -95,11 +95,11 @@ export default function Profile() {
     };
 
     return (
-    <div className="page" style={{ padding:24 }}>
-      <div style={{ maxWidth: 720, margin:"0 auto", position:"relative", zIndex: 0}}>
+    <div className="page" style={{ padding: 20 }}>
+      <div style={{ maxWidth: 720, margin:"0 auto", position:"relative", zIndex:0, marginTop: 60}}>
         <div style={{ display:"flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap"}}>
           <div>
-            <div style={{fontSize: 12, fontWeight: 900, color: "#2563eb" }}>Profile</div>
+            <div style={pill}><span style={{width:8, height:8, borderRadius: 100, background: "#2563eb"}}/>Profile</div>
             <h1 style={{ margin: "8px 0 0", fontSize: 28, fontWeight: 900, letterSpacing: -0.4 }}>
               Account settings
             </h1>
@@ -107,24 +107,34 @@ export default function Profile() {
               Update your display name and view your account info.
             </div>
           </div>
-
-          <button className="btnSec"onClick={() => nav("/dashboard")}type="button">
-            Back to dashboard
-          </button>
+          <div style={{ display: "flex", gap: 15, alignItems: "center" }}>
+            <button 
+            style={{
+                background: "white",
+                border: "1px solid #bdd0f6",
+                padding: "12px 12px",
+                borderRadius: 12,
+                cursor: "pointer",
+                fontWeight: 800,
+                color: "#111827",
+                }} 
+                onClick={() => nav("/dashboard")} type="button">
+                Back to dashboard
+            </button>
+          </div>
         </div>
 
-        <div style={{ marginTop: 16, background: "white", border: "1px solid #e5e7eb", borderRadius: 18, padding: 18, boxShadow: "0 16px 45px rgba(0,0,0,0.06)" }}>
+        <div style={{ marginTop: 16, background: "#fbfbfc", border: "1px solid #e5e7eb", borderRadius: 18, padding: 18, boxShadow: "0 16px 45px rgba(0,0,0,0.06)", marginTop: 40 }}>
           {success && (
             <div style={{ marginBottom: 12, fontSize: 14, background: "#dcfce7", border: "1px solid #86efac", color: "#166534", padding: "10px 14px", borderRadius: 12, fontWeight: 700 }}>
               {success}
             </div>
           )}
-
           <div style={{ display: "grid", gap: 14 }}>
          
 
-            <div>
-              <label style={{ fontWeight: 800, color: "#374151" }}>Display name</label>
+            <div style={{marginTop:19}}>
+              <label style={{ fontWeight: 800, color: "#374151"}}>Display name</label>
               <input
                 value={name}
                 onChange={(e) => {
@@ -132,14 +142,7 @@ export default function Profile() {
                   setNameError("");
                 }}
                 placeholder="Your name"
-                style={{
-                  width: "90%",
-                  marginTop: 8,
-                  padding: "10px 12px",
-                  borderRadius: 12,
-                  border: "1px solid #e5e7eb",
-                  outline: "none",
-                }}
+                style={{...inputStyle, marginTop: 12}}
               />
               {nameError && <p style={{ color:"#ef4444", fontWeight:600, marginTop:8 }}>{nameError}</p>}
               <div style={{ marginTop: 6, fontSize: 12, color: "#9ca3af" }}>
@@ -156,19 +159,13 @@ export default function Profile() {
                 <input
                     value={email}
                     readOnly
-                    style={{
-                    width: "100%",
-                    marginTop: 8,
-                    padding: "10px 12px",
-                    borderRadius: 12,
-                    border: "1px solid #e5e7eb",
-                    background: "#f9fafb",
-                    color: "#6b7280",
-                    }}
+                    style={{...inputStyle, background: "#07070715", color: "#1b191970"}}
                 />
-
+                <div style={{marginTop: 12}}>
+                    <hr style={{height: 1, background: "#a09e9e"}} />
+                </div>
                {/* password form */}
-                <div style={{ fontWeight: 900, marginTop: 38, marginBottom: 8, color:"#374151"  }}>Change password</div>
+                <div style={{ fontWeight: 900, marginTop: 6, marginBottom: 8, color:"#374151"  }}>Change password</div>
                 {pwSuccess && (
                     <div style={{
                         marginBottom: 10,
@@ -323,4 +320,18 @@ const inputStyle = {
     border: "1px solid #e5e7eb",
     outline: "none",
     boxSizing: "border-box",
+    background: "#060c4206"
+}
+
+const pill = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: "1px solid #2563eb38",
+    background: "#2563eb1a",
+    color: "#1d4ed8",
+    fontSize: 13,
+    fontWeight: 800,    
 }

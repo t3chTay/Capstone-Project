@@ -198,7 +198,7 @@ function AppDashboard({mode = "patient"}) {
             boxShadow: "0 14px 40px rgba(0,0,0,0.06)",
         },
         softCard: {
-            background: "white",
+            background:"white" ,
             border: "1px solid #e5e7eb",
             borderRadius: 18,
             padding: 18,
@@ -258,6 +258,21 @@ function AppDashboard({mode = "patient"}) {
 
     const userName = localStorage.getItem("clearsym_user_name") || "";
 
+
+   const selectStyle = {
+    width: "100%",
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid #e5e7eb",
+    background: "#f9fafb",
+    fontSize: 14,
+    fontWeight: 600,
+    outline: "none",
+    appearance: "none",  
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.04)",    
+} 
 
     return (        
         <div style={{...ui.page, background: "radial-gradient(circle at top left, rgba(37,99,235,0.08), transparent 40%)"
@@ -522,17 +537,7 @@ function AppDashboard({mode = "patient"}) {
                                         <select
                                             value={range}
                                             onChange={(e) => setRange(e.target.value)}
-                                            style={{
-                                                fontSize: 12,
-                                                fontWeight: 800,
-                                                color: "#111827",
-                                                background: "white",
-                                                border: "1px solid #e5e7eb",
-                                                borderRadius: 10,
-                                                padding: "6px 10px",
-                                                cursor: "pointer",
-                                                outline: "none",
-                                            }}
+                                            style={selectStyle}
                                         >
                                             <option value="7">Last 7 days</option>
                                             <option value="30">Last 30 days</option>
@@ -554,7 +559,7 @@ function AppDashboard({mode = "patient"}) {
                                         borderRadius: 14,
                                         padding: 14,
                                         marginBottom: 10,
-                                        background: "#fff",
+                                        background: "#f9fafb",
                                         borderLeft: Number(s.severity) >= 8 ? "6px solid #ef7a7a" : "6px solid transparent",
                                         }}
                                     >
@@ -693,7 +698,7 @@ function AppDashboard({mode = "patient"}) {
 
                         {/* Insights row */}
                         <div style={{ marginTop: 16 }}>
-                        <div style={ui.card}>
+                        <div style={{...ui.card,  background: "linear-gradient(135deg, #ffffffcc, #255aeb24"}}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                             <div>
                                 <div style={ui.pill}>📊 Insights</div>
@@ -722,28 +727,28 @@ function AppDashboard({mode = "patient"}) {
                                 gap: 16,
                             }}
                             >
-                            <div style={ui.card}>
+                            <div style={{...ui.card, background: "#f9fafb"}}>
                                 <ChartHeader title="Pressure vs Severity" subtitle="How barometric pressure relates to symptom intensity" />
                                 <div style={{ marginTop: 12 }}>
                                 <PressureChart data={filteredSymptoms} />
                                 </div>
                             </div>
 
-                            <div style={ui.card}>
+                            <div style={{...ui.card, background: "#f9fafb"}}>
                                 <ChartHeader title="Severity vs Temperature" subtitle="Symptom severity plotted against temperature" />
                                 <div style={{ marginTop: 12 }}>
                                 <SeverityTempChart patientCode={patientCode} />
                                 </div>
                             </div>
 
-                            <div style={ui.card}>
+                            <div style={{...ui.card, background: "#f9fafb"}}>
                                 <ChartHeader title="Daily Symptom Frequency" subtitle="Number of symptoms logged per day" />
                                 <div style={{ marginTop: 12 }}>
                                 <DailyFrequencyChart patientCode={patientCode} />
                                 </div>
                             </div>
 
-                            <div style={ui.card}>
+                            <div style={{...ui.card, background: "#f9fafb"}}>
                                 <ChartHeader title="Condition Breakdown" subtitle="Distribution of symptoms by weather condition" />
                                 <div style={{ marginTop: 12 }}>
                                 <ConditionPie patientCode={patientCode} />
@@ -854,6 +859,7 @@ function AppDashboard({mode = "patient"}) {
     }
 
 }
+
 
 
 

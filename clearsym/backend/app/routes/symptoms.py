@@ -8,6 +8,17 @@ symptoms_bp = Blueprint("symptoms", __name__)
 @symptoms_bp.route("/", methods=["POST"])
 def create_symptom():
     data = request.get_json()
+    from datetime import datetime
+    
+    timestamp = data.get("timestamp")
+
+    if timestamp:
+        try:
+            created_at = datetime.fromisoformat(timestamp)
+        except ValueError:
+            return jsonify({"error": "Invalid timestamp format"}), 400
+    else:
+        created_at = datetime.utcnow()   
     
     patient_code = data.get("patient_code")
     if not patient_code:
@@ -21,7 +32,7 @@ def create_symptom():
     severity = data.get("severity")
     lat = data.get("lat", 43.65107)
     lon = data.get("lon", -79.347015)
-    
+
     if not symptom_type or severity is None:
         return jsonify ({"error": "symptom_type and severity are required"}), 400
     
@@ -38,6 +49,7 @@ def create_symptom():
         patient_code_id=pc.id,
         symptom_type=symptom_type,
         severity=severity,
+        created_at=created_at,
         notes=data.get("notes", ""),
         temperature=temp,
         humidity=humidity,

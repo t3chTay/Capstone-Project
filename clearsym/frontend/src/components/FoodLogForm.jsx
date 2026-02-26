@@ -8,28 +8,40 @@ export default function FoodLogForm({patientCode, onLogged}) {
     const [time, setTime] = useState("");
 
     const submit = async (e) => {
-        e.preventDefault();
-        if (!patientCode) return;
-        if (!foodName.trim()) return alert("Food name required");
-        
+    e.preventDefault();
+    if (!patientCode) return;
+    if (!foodName.trim()) return alert("Food name required");
+
+    let localTimestamp = null;
+
+    if (time) {
         const now = new Date();
-        if (time) {
-            const [hours, minutes] = time.split(":");
-            now.setHours(hours);
-            now.setMinutes(minutes);
-            now.setSeconds(0);
-        }
+        const [hours, minutes] = time.split(":");
+        now.setHours(Number(hours));
+        now.setMinutes(Number(minutes));
+        now.setSeconds(0);
+        now.setMilliseconds(0);
 
-        await createFoodLog(patientCode,{
-            food_name: foodName.trim(),
-            notes,
-            suspected_trigger: suspected,
-            timestamp: now.toISOString(),
-        });
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mi = String(now.getMinutes()).padStart(2, "0");
 
-        setFoodName("");
-        setNotes("");
-        setSuspected(false);
+        localTimestamp = `${yyyy}-${mm}-${dd}T${hh}:${mi}:00`;
+    }
+
+    await createFoodLog(patientCode, {
+        food_name: foodName.trim(),
+        notes,
+        suspected_trigger: suspected,
+        ...(localTimestamp ? { timestamp: localTimestamp } : {}),
+    });
+
+    setFoodName("");
+    setNotes("");
+    setSuspected(false);
+    setTime("");
 
         if (typeof onLogged === "function") onLogged();
     };
@@ -46,8 +58,8 @@ export default function FoodLogForm({patientCode, onLogged}) {
                     <label style={labelStyle}>Notes: </label>
                     <input style={inputStyle} value={notes} onChange={(e) => setNotes(e.target.value)} />
                 </div>
-                <div>
-                    <label style={labelStyle}>Time</label>
+                <div style={{marginTop: 14}}>
+                    <label style={labelStyle}>Time food was consumed</label>
                     <input
                     style={inputStyle}
                     type="time"
@@ -105,17 +117,21 @@ const primaryButton = {
 };
 const inputStyle = {
     width: "90%",
-    marginTop: 10,
-    padding: "10px 12px",
+    padding: "10px 14px",
     borderRadius: 12,
     border: "1px solid #e5e7eb",
     outline: "none",
     fontSize: 14,
-    marginBottom:12,
+    background: "#f9fafb",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+    transition: "all 0.2s ease",
+    marginTop: 15,
 };
 
 const labelStyle = {
     fontWeight: 900,
-    fontSize: 16
+    fontSize: 17,
+    color: "#374151",
+    
 }
 

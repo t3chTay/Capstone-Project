@@ -36,30 +36,44 @@ def list_food_logs():
     } for l in logs]
     return jsonify(data)
 
+
+
 @food_logs_bp.route("/", methods=["POST"])
 def create_food_log():
     pc, err = get_patient_or_error()
     if err:
-        return err
+        return err    
     
+    from datetime import datetime
+    timestamp = data.get("timestamp")
+
+    if timestamp:
+        try:
+            created_at = datetime.fromisoformat(timestamp)
+        except ValueError:
+            return jsonify({"error": "Invalid timestamp format"}), 400
+    else:
+        created_at = datetime.utcnow()      
+    
+
+
     payload = request.get_json() or {}
     food_name = payload.get("food_name", "").strip()
     if not food_name:
         return jsonify({"error": "food_name is required"}), 400
-    
+
     log = FoodLog(
         food_name=food_name,
         notes=payload.get("notes"),
         suspected_trigger=bool(payload.get("suspected_trigger", False)),
         patient_code_id=pc.id,
+        created_at=created_at, 
     )
+
     db.session.add(log)
     db.session.commit()
-    
-    return jsonify({
-        "message": "Food logged successfully",
-        "food_log_id": log.id
-    }), 201
+
+    return jsonify({"message": "Food logged successfully", "food_log_id": log.id}), 201
     
 @food_logs_bp.route("/<int:log_id>", methods=["DELETE"])
 def delete_food_log(log_id):

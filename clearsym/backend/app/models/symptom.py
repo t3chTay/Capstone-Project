@@ -7,6 +7,7 @@ class Symptom(db.Model):
     
     symptom_type = db.Column(db.String(100), nullable=False)
     severity = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     notes = db.Column(db.Text)
     
     # weather
@@ -15,7 +16,6 @@ class Symptom(db.Model):
     pressure = db.Column(db.Integer)
     weather_condition = db.Column(db.String(50))
     wind_speed = db.Column(db.Float)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # code
     patient_code_id = db.Column(db.Integer, db.ForeignKey("patient_codes.id"), nullable=False)
@@ -31,6 +31,6 @@ class Symptom(db.Model):
             "pressure": self.pressure,
             "weather_condition": self.weather_condition,
             "wind_speed": self.wind_speed,
-            "created_at": self.created_at.isoformat(),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
             "patient_code_id": self.patient_code_id
         }

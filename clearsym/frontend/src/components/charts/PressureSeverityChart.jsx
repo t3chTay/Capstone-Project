@@ -8,14 +8,14 @@ export default function PressureChart({data}) {
     }));
     console.log("Chart Data:", chartData);
     return (
-        <div style={{marginBottom: "40px", width:"100%", height: 320, borderRadius: "12px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)"}}>
+        <div style={{marginBottom: "40px", width:"100%", height: 320, borderRadius: "12px", background: "#f9fafb",
+}}>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="pressure" label={{ value: "Pressure", position: "insideBottom", offset: -5, fontSize: 14 }} />
                     <YAxis label={{ value: "Severity", angle: -90, position: "insideLeftCenter", fontSize: 14 }} />
                     <Tooltip />
-                    <Legend />
                     <Line type="monotone" dataKey="severity" stroke="#8884d8" activeDot={{radius:8}} />
                 </LineChart>
             </ResponsiveContainer>

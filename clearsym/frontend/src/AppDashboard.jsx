@@ -35,7 +35,7 @@ function AppDashboard({mode = "patient"}) {
 
     const validatePatientCode = async(code) => {
         try {
-            const res = await fetch(`http://127.0.0.1:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(code)}`);
+            const res = await fetch(`http://localhost:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(code)}`);
             return  res.ok;
         } catch {
             return false;

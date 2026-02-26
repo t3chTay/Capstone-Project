@@ -1,67 +1,55 @@
-import { useState, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 
 export default function SignIn() {
   const nav = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const inputRef = useRef(null);
 
-  async function hashPassword(password) {
-    const enc = new TextEncoder().encode(password);
-    const buf = await crypto.subtle.digest("SHA-256", enc);
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, "0")).join("");
-  }
+  const inputRef = useRef(null);
 
   const submit = async (e) => {
     e.preventDefault();
     setEmailError("");
-    setPasswordError(""); // reset past errors
+    setPasswordError("");
 
     const clEmail = email.trim().toLowerCase();
-
-    // required
     if (!clEmail) return setEmailError("Email required");
     if (!/^\S+@\S+\.\S+$/.test(clEmail)) return setEmailError("Please enter a valid email format.");
     if (!password) return setPasswordError("Password required.");
 
-    //  check if registered
-    const users = JSON.parse(localStorage.getItem("clearsym_users") || "{}");
-    const user = users[clEmail];
+    try {
+      const res = await login({ email: clEmail, password });
+      const user = res.data.user;
 
-    if (!user) {
-      setError("Wrong email or seems like you don’t have an account with us.");
-      return;
+      localStorage.setItem("clearsym_authed", "true");
+      localStorage.setItem("clearsym_user_email", user.email);
+      localStorage.setItem("clearsym_user_name", user.name);
+      localStorage.removeItem("clearsym_users");
+
+      nav("/dashboard");
+    } catch (err) {
+      const msg = err?.response?.data?.error || "Login failed";
+      setPasswordError(msg);
     }
-    const passHash = await hashPassword(password);
-    if (user.passHash !== passHash) {
-      return setPasswordError("Wrong password. Please try again.")
-    }
-
-    // success
-    localStorage.setItem("clearsym_authed", "true");
-    localStorage.setItem("clearsym_user_email", clEmail);
-    localStorage.setItem("clearsym_user_name", user.name);
-
-    nav("/dashboard");
   };
-    
 
   return (
     <div
       style={{
         position: "relative",
-        zIndex:0,
+        zIndex: 0,
         minHeight: "calc(100vh - 64px)",
         display: "grid",
         placeItems: "center",
         padding: 24,
-        background: "transparent"
-          // "radial-gradient(900px 500px at 80% 10%, rgba(37,99,235,0.14), transparent 55%), linear-gradient(#f8fafc, #f3f4f6)",
+        background: "transparent",
       }}
     >
       <div style={{ width: "100%", maxWidth: 480 }}>
@@ -102,51 +90,63 @@ export default function SignIn() {
 
           <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
             <div>
-              {/* email input */}
               <label style={{ fontSize: 18, fontWeight: 700, color: "#374151" }}>Email</label>
               <input
                 value={email}
-                onChange={(e) => { setEmail(e.target.value);
-                  setEmailError(""); // clears errors
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError("");
                 }}
                 placeholder="youremail@example.com"
-                style={{...inputStyle, border: emailError ? "1px solid #ef4444" : "1px solid #e5e7eb", transition: "border 0.15s ease, box-shadow 0.15s ease", boxShadow: emailError ? "0 0 0 2px rgba(239, 68, 68 0.15" : "none",}}
+                style={{
+                  ...inputStyle,
+                  border: emailError ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                  transition: "border 0.15s ease, box-shadow 0.15s ease",
+                  boxShadow: emailError ? "0 0 0 2px rgba(239, 68, 68, 0.15)" : "none",
+                }}
+              />
 
-              /> 
               {emailError && (
-                <p style={{marginTop: 10, color: "#ef4444", fontWeight: 600, fontSize: 14,}}> {emailError}</p>
+                <p style={{ marginTop: 10, color: "#ef4444", fontWeight: 600, fontSize: 14 }}>{emailError}</p>
               )}
-              <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 6 }}>
-                Required
-              </div>
+              <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 6 }}>Required</div>
             </div>
 
-              {/* password input */}
-              <div style={{position: "relative", marginTop: 10}}>
-                <label style={{fontSize: 18, fontWeight: 700, color: "#374151"}}>Password</label>
-                <input ref={inputRef} type={showPassword ? "text" : "password"} value={password} onChange={(e) => {
+            <div style={{ position: "relative", marginTop: 10 }}>
+              <label style={{ fontSize: 18, fontWeight: 700, color: "#374151" }}>Password</label>
+              <input
+                ref={inputRef}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
                   setPassword(e.target.value);
-                    setPasswordError("");
-                  }}
-                  placeholder="Enter your password"
-                  style={{...inputStyle, border: passwordError ? "1px solid #ef4444" : "1px solid #e5e7eb", 
-                    transition: "border 0.15s ease, box-shadow 0.15s ease",
-                    boxShadow: passwordError ? "0 0 0 2px rgba(239, 68, 68 0.15)" : "none",
-                  }}
-                />
-                {passwordError && <p style={{marginTop: 10, color: "#ef4444", fontWeight:600, fontSize:14}}>{passwordError}</p>}
-      
-                <button type="button" onClick={() => {
+                  setPasswordError("");
+                }}
+                placeholder="Enter your password"
+                style={{
+                  ...inputStyle,
+                  border: passwordError ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                  transition: "border 0.15s ease, box-shadow 0.15s ease",
+                  boxShadow: passwordError ? "0 0 0 2px rgba(239, 68, 68, 0.15)" : "none",
+                }}
+              />
+
+              {passwordError && (
+                <p style={{ marginTop: 10, color: "#ef4444", fontWeight: 600, fontSize: 14 }}>{passwordError}</p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
                   setShowPassword((v) => !v);
                   setTimeout(() => inputRef.current?.focus(), 0);
                 }}
-                  style={showPassBtn}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
+                style={showPassBtn}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
 
-              {/* sign in button */}
             <button
               type="submit"
               style={{
@@ -185,20 +185,19 @@ const inputStyle = {
   border: "1px solid #e5e7eb",
   outline: "none",
   fontSize: 14,
-
 };
 
 const showPassBtn = {
-  position: "absolute", 
-  right: "22px", 
-  top: "48px", 
-  transform: "translateY(-50%)", 
-  background:"#dcdce2", 
-  border: "1px solid #e5e7eb", 
-  borderRadius: 10, 
-  padding: "6px 10px", 
-  cursor: "pointer", 
-  fontWeight: 700, 
-  fontSize: 12, 
+  position: "absolute",
+  right: "22px",
+  top: "48px",
+  transform: "translateY(-50%)",
+  background: "#dcdce2",
+  border: "1px solid #e5e7eb",
+  borderRadius: 10,
+  padding: "6px 10px",
+  cursor: "pointer",
+  fontWeight: 700,
+  fontSize: 12,
   color: "#111827",
-}
+};

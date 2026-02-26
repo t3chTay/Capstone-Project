@@ -17,6 +17,9 @@ class Symptom(db.Model):
     wind_speed = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # code
+    patient_code_id = db.Column(db.Integer, db.ForeignKey("patient_codes.id"), nullable=False)
+    
     def to_dict(self):
         return {
             "id": self.id,
@@ -28,5 +31,6 @@ class Symptom(db.Model):
             "pressure": self.pressure,
             "weather_condition": self.weather_condition,
             "wind_speed": self.wind_speed,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
+            "patient_code_id": self.patient_code_id
         }

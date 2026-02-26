@@ -7,42 +7,53 @@ export default function SymptomForm({onNewSymptom, patientCode}) {
     const [notes, setNotes] = useState("");
     const [coords, setCoords] = useState(null);
     const [error, setError] = useState("");
+    const [time, setTime] = useState("");
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
+    setError("");
 
-        if (!symptomType || !severity === "") return alert("Type and severity required");
+    if (!symptomType || severity === "") return alert("Type and severity required");
+    if (!patientCode) {
+        console.error("Patient code is still loading, try again in a moment");
+        return;
+    }
 
-        if (!patientCode) {
-          console.error("Patient code is still loading, try again in a moment");  
-          return;
+    let timestamp = null;
+
+    if (time) {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+
+    timestamp = `${yyyy}-${mm}-${dd}T${time}:00`;
+    }
+
+    // ✅ send ONE payload (include timestamp)
+    const data = {
+        patient_code: patientCode,
+        symptom_type: symptomType,
+        severity: parseInt(severity, 10),
+        notes,
+        ...(coords ? coords : {}),
+        ...(timestamp ? { timestamp } : {}),
+    };
+
+    try {
+        const res = await createSymptom(data);
+        if (typeof onNewSymptom === "function") {
+        onNewSymptom(res.data.symptom_id);
         }
-        const data = {
-            patient_code: patientCode,
-            symptom_type: symptomType,
-            severity: parseInt(severity),
-            notes,
-            ...(coords ? coords : {}),
-        };
-
-        try {
-            const res = await createSymptom(data);
-            if (typeof onNewSymptom === "function") {
-                onNewSymptom(res.data.symptom_id);
-            }
-            setSymptomType("");
-            setSeverity("");
-            setNotes("");
-        } catch (err) {
-                console.error("FULL ERROR:", err);
-                console.error("ERROR MESSAGE:", err?.message);
-                console.error("ERR CODE:", err?.code);
-                console.error("ERR REQUEST:", err?.request);
-                console.error("SERVER RESPONSE:", err?.response?.data);
-                console.error("STATUS:", err?.response?.status);
-                console.error("REQUEST DATA SENT:", data);
-                setError("err?.message || Failed to log symptom");
-        }
+        setSymptomType("");
+        setSeverity("");
+        setNotes("");
+        setTime("");
+    } catch (err) {
+        console.error("SERVER RESPONSE:", err?.response?.data);
+        console.error("STATUS:", err?.response?.status);
+        setError(err?.response?.data?.error || err?.message || "Failed to log symptom");
+    }
     };
 
     useEffect(() => {
@@ -83,6 +94,16 @@ export default function SymptomForm({onNewSymptom, patientCode}) {
                         onChange={(e) => setSeverity(e.target.value)}
                     />
                 </div>
+
+                <div>
+                    <label style={{marginTop:8, fontWeight: 900, fontSize:16}}>Time</label>
+                    <input style={inputStyle}
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    />  
+                </div>
+                
 
                 <div>
                     <label style={{marginTop:8, fontWeight: 900, fontSize:16}}>Notes: </label>

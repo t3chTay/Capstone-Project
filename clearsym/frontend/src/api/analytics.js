@@ -1,7 +1,6 @@
-import axios from "axios";
+import { API } from "./client";
 
-const API = axios.create({ baseURL:"http://127.0.0.1:5001/api" });
-
+export const getSymptoms = (code) => API.get(`/symptoms/by-code/${code}`);
 export const getSeverityTemp = (patientCode) => API.get("/analytics/severity-temperature",{params: {patient_code: patientCode}});
 export const getDailyFrequency = (patientCode) => API.get("/analytics/daily-frequency", {params: {patient_code: patientCode}});
 export const getConditionBreakdown = (patientCode) => API.get("/analytics/condition-breakdown", {params:{patient_code: patientCode}});

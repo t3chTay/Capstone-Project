@@ -25,7 +25,7 @@ export default function Doctor() {
 
     try {
       await axios.get(
-        `http://127.0.0.1:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(
+        `http://localhost:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(
           trimmed
         )}`
       );

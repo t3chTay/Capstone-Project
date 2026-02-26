@@ -5,16 +5,26 @@ export default function FoodLogForm({patientCode, onLogged}) {
     const [foodName, setFoodName] = useState("");
     const [notes, setNotes] = useState("");
     const [suspected, setSuspected] = useState(false);
+    const [time, setTime] = useState("");
 
     const submit = async (e) => {
         e.preventDefault();
         if (!patientCode) return;
         if (!foodName.trim()) return alert("Food name required");
+        
+        const now = new Date();
+        if (time) {
+            const [hours, minutes] = time.split(":");
+            now.setHours(hours);
+            now.setMinutes(minutes);
+            now.setSeconds(0);
+        }
 
         await createFoodLog(patientCode,{
             food_name: foodName.trim(),
             notes,
             suspected_trigger: suspected,
+            timestamp: now.toISOString(),
         });
 
         setFoodName("");
@@ -35,6 +45,16 @@ export default function FoodLogForm({patientCode, onLogged}) {
                 <div>
                     <label style={labelStyle}>Notes: </label>
                     <input style={inputStyle} value={notes} onChange={(e) => setNotes(e.target.value)} />
+                </div>
+                <div>
+                    <label style={labelStyle}>Time</label>
+                    <input
+                    style={inputStyle}
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+
+                    />
                 </div>
 
                 <label style={{display: "flex", alignItems:"center", gap: 8, cursor: "pointer", position: "relative", fontWeight: 700, fontSize: 15, marginTop: 10}}>

@@ -1,5 +1,4 @@
-import axios from "axios";
+import { API } from "./client";
 
-const API = axios.create({ baseURL: "http://127.0.0.1:5001/api"});
-
+export const getSymptoms = (code) => API.get(`/symptoms/by-code/${code}`);
 export const createPatientCode = (data) => API.post("/patient-codes/", data);

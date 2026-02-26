@@ -34,16 +34,7 @@ export default function Navbar() {
     <div style={navStyle}>
       <div style={container}>
         {/* logo */}
-        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: "#2563eb",
-              boxShadow: "0 8px 20px rgba(37,99,235,0.25)",
-            }}
-          />
+        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>   
           <span style={{ fontWeight: 900, color: "#111827" }}>ClearSYM</span>
         </Link>
 

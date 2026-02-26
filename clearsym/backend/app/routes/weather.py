@@ -5,7 +5,7 @@ import os
 
 weather_bp = Blueprint("weather", __name__)
 
-@weather_bp.route("/api/weather", methods=["GET"])
+@weather_bp.route("/", methods=["GET"])
 def get_weather():
     city = request.args.get("city", "Toronto")
     

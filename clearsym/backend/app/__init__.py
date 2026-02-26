@@ -13,6 +13,10 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+    from models.symptom import Symptom
+    from models.patient_code import PatientCode
+    from models.food_log import FoodLog
+    from models.user import User
     with app.app_context():
         db.create_all()
 

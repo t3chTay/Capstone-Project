@@ -5,30 +5,25 @@ from dotenv import load_dotenv
 from app.config import Config
 import os
 
-
 def create_app():
-
     load_dotenv()
     app = Flask(__name__)
     app.config.from_object(Config)
     app.config["OPENWEATHER_API_KEY"] = os.getenv("OPENWEATHER_API_KEY")
-    print("DB URI:", app.config["SQLALCHEMY_DATABASE_URI"])    
+
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
-    @app.after_request
-    def add_cors_headers(response):
-        origin = request.headers.get("Origin")
-        allowed = {"http://localhost:5173", "http://localhost:5000"}
-        if origin in allowed:
-            response.headers["Access-Control-Allow-Origin"] = origin
-        else:
-            # optional: comment this out if you only want strict origins
-            response.headers["Access-Control-Allow-Origin"] = "*"
+    with app.app_context():
+        db.create_all()
 
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-        return response
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://astounding-kitten-a11c0a.netlify.app",
+        ]}}
+    )
 
     @app.route("/api/<path:_path>", methods=["OPTIONS"])
     def preflight(_path):

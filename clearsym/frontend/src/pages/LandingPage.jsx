@@ -14,7 +14,7 @@ export default function LandingPage() {
     >
 
     {/* hero section */}
-    <div style={{maxWidth: 1100, margin: "0 auto", marginTop: 67, padding: "36px 20px 10px"}}>
+    <div style={{maxWidth: 1100, margin: "0 auto", marginTop: 100, padding: "36px 20px 10px"}}>
       <div
         style={{
           display: "grid",
@@ -209,7 +209,7 @@ export default function LandingPage() {
 
 
         <div>
-          <hr style={{marginTop: 88}}/>
+          <hr style={{marginTop: 200}}/>
         </div>
         {/* feature grid */}
         <div style={{ marginTop: 200 }}>

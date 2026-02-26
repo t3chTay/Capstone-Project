@@ -20,7 +20,7 @@ export default function ParticlesBackground() {
       fullScreen:{enable:false},
       background: { color:{value:"transparent" }},
       particles: {
-        number: { value: 59, density: {enable: true}},
+        number: { value: 60, density: {enable: true}},
         color: {value: "#93bdef"},
         opacity: { value: 1.1},
         size: { value:1 },

@@ -30,7 +30,7 @@ export default function SymptomForm({onNewSymptom, patientCode}) {
     timestamp = `${yyyy}-${mm}-${dd}T${time}:00`;
     }
 
-    // ✅ send ONE payload (include timestamp)
+    
     const data = {
         patient_code: patientCode,
         symptom_type: symptomType,

@@ -25,13 +25,14 @@ def create_app():
         resources={r"/api/*": {"origins": [
             "http://localhost:5173",
             "http://127.0.0.1:5173",
-            "https://astounding-kitten-a11c0a.netlify.app",
-        ]}}
+            "https://astounding-kitten-a11c0a.netlify.app"
+        ]}},
+        supports_credentials=True
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
+        expose_headers=["Content-Type", "Authorization"],
     )
 
-    @app.route("/api/<path:_path>", methods=["OPTIONS"])
-    def preflight(_path):
-        return ("", 204)
     @app.get("/api/ping")
     def ping():
         return{"ok": True, "server": "clearsym-backend"}

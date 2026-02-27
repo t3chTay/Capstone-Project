@@ -186,3 +186,15 @@ hr {
   border: none;
   z-index: 999;
 }
+
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #579cf0;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  transform: scale(1);
+}

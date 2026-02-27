@@ -1,14 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getDailyFrequency } from "../../api/analytics";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from "recharts";
 
 export default function DailyFrequencyChart({ patientCode }) {
   const [raw, setRaw] = useState([]);

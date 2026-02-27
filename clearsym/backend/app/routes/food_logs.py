@@ -41,6 +41,7 @@ def list_food_logs():
 @food_logs_bp.route("/", methods=["POST"])
 def create_food_log():
     pc, err = get_patient_or_error()
+    data = request.get_json()
     if err:
         return err    
     
@@ -55,8 +56,8 @@ def create_food_log():
     else:
         created_at = datetime.utcnow()      
     
-
-
+    
+    
     payload = request.get_json() or {}
     food_name = payload.get("food_name", "").strip()
     if not food_name:

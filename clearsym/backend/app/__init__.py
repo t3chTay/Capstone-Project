@@ -4,6 +4,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from app.config import Config
 import os
+import re
 
 def create_app():
     load_dotenv()
@@ -28,15 +29,20 @@ def create_app():
                     "http://localhost:5173",
                     "http://127.0.0.1:5173",
                     "https://astounding-kitten-a11c0a.netlify.app",
+                    re.compile(r"^https://.*\.netlify\.app$"),
                 ]
             }
         },
-        supports_credentials=True,
         methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "Authorization"],
-        expose_headers=["Content-Type", "Authorization"],
     )
-
+    @app.get("/")
+    def root():
+        return {
+            "ok":True,
+            "service": "clearsym-backend",
+            "health": "/api/ping"
+        }
     @app.get("/api/ping")
     def ping():
         return{"ok": True, "server": "clearsym-backend"}

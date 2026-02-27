@@ -35,7 +35,8 @@ function AppDashboard({mode = "patient"}) {
 
     const validatePatientCode = async(code) => {
         try {
-            const res = await fetch(`http://localhost:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(code)}`);
+            const baseURL = import.meta.env.VITE_API_URL || "https://clearsym-web.onrender.com/api";
+            const res = await fetch(`${baseURL}/patient-codes/validate?patient_code=${encodeURIComponent(code)}`);
             return  res.ok;
         } catch {
             return false;

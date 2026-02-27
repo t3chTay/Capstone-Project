@@ -24,10 +24,11 @@ export default function Doctor() {
     setLoading(true);
 
     try {
+      const baseURL =
+        import.meta.env.VITE_API_URL || "https://clearsym-web.onrender.com/api";
+
       await axios.get(
-        `http://localhost:5001/api/patient-codes/validate?patient_code=${encodeURIComponent(
-          trimmed
-        )}`
+        `${baseURL}/patient-codes/validate?patient_code=${encodeURIComponent(trimmed)}`
       );
 
       // valid in DB
